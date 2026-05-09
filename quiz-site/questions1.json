@@ -68,7 +68,7 @@
     },
     "answers": [
       "B",
-      "C"
+      "D"
     ]
   },
   {
@@ -287,7 +287,10 @@
   },
   {
     "q_num": 22,
-    "text": "A developer must implement a CheckPaymentProcessor class that provides check processing payment capabilities that adhere to what is defined for payments in the PaymentProcessor interface. Which implementation is correct?",
+    "text": "A developer must implement a CheckPaymentProcessor class that provides check processing payment capabilities that adhere to what is defined for payments in the PaymentProcessor interface. Which implementation is correct? 
+public interface PaymentProcessor {
+    void pay(Decimal amount);
+}",
     "options": {
       "A": "public class CheckPaymentProcessor extends PaymentProcessor { public void pay(Decimal amount) { // functional code here } }",
       "B": "public class CheckPaymentProcessor extends PaymentProcessor { public void pay(Decimal amount); }",
@@ -300,7 +303,10 @@
   },
   {
     "q_num": 23,
-    "text": "A lead developer creates a virtual class called 'OrderRequest'. How can a developer use the OrderRequest class within the CustomerOrder class?",
+    "text": "A lead developer creates a virtual class called 'OrderRequest'. How can a developer use the OrderRequest class within the CustomerOrder class?
+    public class CustomOrder{
+      //code
+    }",
     "options": {
       "A": "public class CustomerOrder implements Order",
       "B": "public class CustomerOrder extends OrderRequest",
@@ -440,7 +446,7 @@
       "D": "import updateAccounts from 'AccountController.updateAccounts';"
     },
     "answers": [
-      "B"
+      "C"
     ]
   },
   {
