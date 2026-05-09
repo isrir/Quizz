@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PD2 Exam Quiz - Salesforce Platform Developer II</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Adaptive Quiz Engine | Multi-Source JSON | Answer Verification</title>
     <style>
         * {
             margin: 0;
@@ -13,253 +13,306 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
-        /* Header Styles */
+        /* Header & Brand */
         .header {
             text-align: center;
             color: white;
             margin-bottom: 30px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            animation: slideDown 0.5s ease;
+            padding: 25px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .header h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+        /* JSON loader card */
+        .json-panel {
+            background: #1e293b;
+            border-radius: 28px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+            border: 1px solid #334155;
         }
 
-        /* Loading State */
-        .loading-container {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 20px;
-            margin-top: 50px;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Quiz Section */
-        .quiz-section {
-            animation: fadeIn 0.5s ease;
-        }
-
-        .progress-container {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
+        .panel-title {
+            color: #cbd5e1;
             font-weight: 600;
-            color: #333;
-        }
-
-        .progress-bar-wrapper {
-            width: 100%;
-        }
-
-        .progress-bar {
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            height: 30px;
-            position: relative;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            height: 100%;
-            transition: width 0.3s ease;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9em;
+            gap: 8px;
+            font-size: 1.2rem;
         }
 
-        /* Question Card */
-        .question-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .question-header {
+        .json-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .question-badge {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .question-counter {
-            color: #999;
-            font-size: 0.9em;
-        }
-
-        .question-text {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        /* Options Container */
-        .options-container {
-            margin-bottom: 20px;
-        }
-
-        .option-item {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .option-item:hover:not(.disabled) {
-            background: #f0f0f0;
-            border-color: #667eea;
-            transform: translateX(5px);
-        }
-
-        .option-item.selected {
-            background: #e8eaff;
-            border-color: #667eea;
-        }
-
-        .option-item.correct {
-            background: #d4edda;
-            border-color: #28a745;
-        }
-
-        .option-item.incorrect {
-            background: #f8d7da;
-            border-color: #dc3545;
-        }
-
-        .option-item.disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .option-letter {
-            font-weight: bold;
-            font-size: 1.1em;
-            min-width: 35px;
-            color: #667eea;
-        }
-
-        .option-text {
-            flex: 1;
-            line-height: 1.5;
-            color: #333;
-        }
-
-        /* Feedback Section */
-        .feedback-section {
-            margin-top: 20px;
-            animation: slideUp 0.3s ease;
-        }
-
-        .feedback-message {
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: 500;
-        }
-
-        .feedback-message.correct {
-            background: #d4edda;
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
-
-        .feedback-message.incorrect {
-            background: #f8d7da;
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
-
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
             flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .nav-btn {
-            padding: 12px 24px;
-            font-size: 1em;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
+        .json-badge {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            border: 1px solid #334155;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .nav-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .json-badge.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #60a5fa;
+            box-shadow: 0 0 8px #3b82f680;
+        }
+
+        .remove-json-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 8px;
+            padding: 0 4px;
+            border-radius: 20px;
+        }
+        .remove-json-btn:hover {
+            color: #ef4444;
+            background: #334155;
+        }
+
+        .add-json-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+            align-items: flex-start;
+        }
+
+        .json-textarea {
+            flex: 2;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 12px 16px;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+        }
+
+        .btn-add {
+            background: linear-gradient(95deg, #2dd4bf, #14b8a6);
+            border: none;
+            padding: 0 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: #0f172a;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: scale(1.02);
+            background: #5eead4;
+        }
+
+        .topic-selector {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .topic-chip {
+            background: #1e293b;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid #334155;
+            color: #cbd5e6;
+        }
+
+        .topic-chip.selected {
+            background: #8b5cf6;
+            color: white;
+            border-color: #a78bfa;
+        }
+
+        .quiz-stats {
+            background: #0f172a;
+            border-radius: 24px;
+            padding: 12px 20px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* Quiz core */
+        .quiz-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .progress-card {
+            background: #1e293b;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: #334155;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 28px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            width: 0%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .question-card {
+            background: #0f172a;
+            border-radius: 32px;
+            padding: 28px;
+            border: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #f1f5f9;
+            margin-bottom: 28px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .option-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover:not(.disabled-option) {
+            background: #2d3a5e;
+            border-color: #8b5cf6;
+        }
+
+        .option-item.selected {
+            background: #2d3a5e;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 6px #8b5cf6;
+        }
+
+        .option-item.verify-correct {
+            background: #14532d;
+            border-color: #22c55e;
+        }
+
+        .option-item.verify-incorrect {
+            background: #7f1d1d;
+            border-color: #ef4444;
+        }
+
+        .disabled-option {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #a78bfa;
+            min-width: 32px;
+            font-size: 1.1rem;
+        }
+
+        .feedback-area {
+            background: #111827;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 12px;
+            border-left: 5px solid #8b5cf6;
+            color: #d1d5db;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 40px;
+            background: #334155;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn.primary {
+            background: #3b82f6;
+        }
+        .nav-btn.success {
+            background: #10b981;
+        }
+        .nav-btn.warning {
+            background: #f59e0b;
         }
 
         .nav-btn:disabled {
@@ -267,824 +320,479 @@
             cursor: not-allowed;
         }
 
-        .prev-btn {
-            background: #6c757d;
-            color: white;
-        }
-
-        .next-btn {
-            background: #667eea;
-            color: white;
-        }
-
-        .check-btn {
-            background: #28a745;
-            color: white;
-        }
-
-        .reset-btn {
-            background: #dc3545;
-            color: white;
+        .verification-badge {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
         }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            animation: fadeIn 0.3s ease;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
         }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            border-radius: 20px;
-            width: 90%;
+        .modal-card {
+            background: #1e293b;
             max-width: 800px;
-            max-height: 85%;
+            width: 90%;
+            max-height: 80vh;
+            border-radius: 32px;
             overflow-y: auto;
-            animation: slideUp 0.3s ease;
+            padding: 24px;
+            border: 1px solid #475569;
         }
 
-        .modal-header {
-            padding: 20px 25px;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: white;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .modal-header h2 {
-            color: #333;
-        }
-
-        .close-btn {
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.3s;
-            line-height: 1;
-        }
-
-        .close-btn:hover {
-            color: #333;
-        }
-
-        .modal-body {
-            padding: 25px;
-        }
-
-        .modal-footer {
-            padding: 20px 25px;
-            border-top: 2px solid #f0f0f0;
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            position: sticky;
-            bottom: 0;
-            background: white;
-            border-radius: 0 0 20px 20px;
-        }
-
-        /* Results Styles */
-        .results-summary {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .score-circle {
-            display: inline-block;
-            padding: 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .score-number {
-            font-size: 2em;
-            font-weight: bold;
-        }
-
-        .score-percentage {
-            font-size: 1.2em;
-            margin-top: 5px;
-        }
-
-        .score-grade {
-            font-size: 1.1em;
-            margin-top: 5px;
-        }
-
-        .results-message {
-            font-size: 1.1em;
-            color: #666;
-        }
-
-        .results-details {
-            margin-top: 30px;
-        }
-
-        .results-details h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .result-item {
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            border-left: 4px solid;
-        }
-
-        .result-correct {
-            background: #d4edda;
-            border-left-color: #28a745;
-        }
-
-        .result-incorrect {
-            background: #f8d7da;
-            border-left-color: #dc3545;
-        }
-
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .result-status {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .result-number {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .result-text {
-            margin-bottom: 8px;
-            color: #666;
-        }
-
-        .result-answers {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        /* Error Message */
-        .error-message {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 20px;
-            margin-top: 50px;
-        }
-
-        .error-message h3 {
-            color: #dc3545;
-            margin-bottom: 15px;
-        }
-
-        .error-message p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
         }
 
-        @keyframes slideDown {
-            from {
-                transform: translateY(-30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.5em;
-            }
-            
-            .header p {
-                font-size: 0.9em;
-            }
-            
-            .question-card {
-                padding: 20px;
-            }
-            
-            .question-text {
-                font-size: 1em;
-            }
-            
-            .nav-btn {
-                padding: 10px 18px;
-                font-size: 0.9em;
-            }
-            
-            .option-text {
-                font-size: 0.9em;
-            }
-            
-            .modal-content {
-                margin: 10% auto;
-                width: 95%;
-            }
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
+        @media (max-width: 700px) {
+            .question-text { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>📚 Salesforce Platform Developer II (PD2)</h1>
-            <p>Exam Preparation Quiz</p>
+<div class="container">
+    <div class="header">
+        <h1>📚 PD2 Exam Simulator</h1>
+        <p>Multiple JSON banks | Filter by topic | Submit & Verify your answers</p>
+    </div>
+
+    <!-- JSON Management Panel -->
+    <div class="json-panel">
+        <div class="panel-title">🗂️ Question Sets (JSON Banks)</div>
+        <div id="jsonBadgeList" class="json-list"></div>
+        <div class="add-json-area">
+            <textarea id="newJsonInput" rows="2" class="json-textarea" placeholder='Paste new JSON array: [{"text":"...","options":{"A":"..."},"answers":["A"],"topic":"..."}]'></textarea>
+            <button id="addJsonBtn" class="btn-add">➕ Add New JSON Set</button>
         </div>
-
-        <!-- Loading State -->
-        <div id="loadingContainer" class="loading-container">
-            <div class="spinner"></div>
-            <p>Loading questions from JSON file...</p>
+        <div class="topic-selector" id="topicFilterContainer">
+            <span style="color:#94a3b8;">🎯 Filter by topic:</span>
+            <span data-topic="all" class="topic-chip selected">All Topics</span>
         </div>
-
-        <!-- Quiz Section (hidden initially) -->
-        <div id="quizSection" class="quiz-section" style="display: none;">
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-info">
-                    <span id="progressText">📊 Progress: 0/0</span>
-                    <span id="scoreText">⭐ Score: 0/0</span>
-                </div>
-                <div class="progress-bar-wrapper">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="question-card">
-                <div class="question-header">
-                    <span class="question-badge" id="questionBadge">Question</span>
-                    <span class="question-counter" id="questionCounter">1 / 0</span>
-                </div>
-                <div class="question-text" id="questionText"></div>
-                <div class="options-container" id="optionsContainer"></div>
-                <div class="feedback-section" id="feedbackSection" style="display: none;">
-                    <div class="feedback-message" id="feedbackMessage"></div>
-                </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="nav-buttons">
-                <button class="nav-btn prev-btn" id="prevBtn">
-                    <span>←</span> Previous
-                </button>
-                <button class="nav-btn check-btn" id="checkBtn">
-                    <span>✓</span> Check Answer
-                </button>
-                <button class="nav-btn next-btn" id="nextBtn">
-                    Next <span>→</span>
-                </button>
-                <button class="nav-btn reset-btn" id="resetBtn">
-                    <span>⟳</span> Reset
-                </button>
-            </div>
+        <div class="quiz-stats">
+            <span>📚 Total questions: <strong id="totalQty">0</strong></span>
+            <span>✅ Answered: <strong id="answeredCount">0</strong></span>
+            <span>⭐ Correct: <strong id="correctCount">0</strong></span>
         </div>
     </div>
 
-    <!-- Results Modal -->
-    <div class="modal" id="resultsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🏆 Quiz Results</h2>
-                <span class="close-btn" id="closeModalBtn">&times;</span>
-            </div>
-            <div class="modal-body" id="resultsBody"></div>
-            <div class="modal-footer">
-                <button class="btn-secondary" id="closeResultsBtn">Close</button>
-                <button class="btn-primary" id="retakeQuizBtn">🔄 Take Quiz Again</button>
+    <!-- Quiz main area -->
+    <div id="quizSection" class="quiz-section" style="display: none;">
+        <div class="progress-card">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill">0%</div></div>
+            <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                <span id="questionIndexLabel">Question 1 / 0</span>
+                <span id="verificationStatusLabel">⚡ Not verified</span>
             </div>
         </div>
+
+        <div class="question-card">
+            <div class="question-text" id="questionText"></div>
+            <div class="options-container" id="optionsContainer"></div>
+            <div id="feedbackPanel" class="feedback-area" style="display: none;"></div>
+            <div class="verification-badge" id="postSubmitHint"></div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prevBtn">◀ Previous</button>
+            <button class="nav-btn primary" id="submitCheckBtn">✅ Submit & Verify</button>
+            <button class="nav-btn success" id="nextBtn">Next ▶</button>
+            <button class="nav-btn warning" id="resetAllBtn">⟳ Reset Quiz</button>
+            <button class="nav-btn" id="showFinalResultsBtn">🏆 Show Results</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        // Global variables
-        let questions = [];
-        let currentQuestionIndex = 0;
-        let userAnswers = {};
-        let showingResult = false;
-        let currentSelectedOptions = new Set();
+<div id="resultsModal" class="modal">
+    <div class="modal-card">
+        <h2 style="color:white; margin-bottom: 20px;">📊 Final Verdict</h2>
+        <div id="modalResultsBody"></div>
+        <button id="closeModalBtn" style="margin-top:20px; background:#475569; padding:10px 20px; border-radius:30px; border:none; color:white; cursor:pointer;">Close</button>
+    </div>
+</div>
 
-        // DOM Elements
-        const loadingContainer = document.getElementById('loadingContainer');
-        const quizSection = document.getElementById('quizSection');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const checkBtn = document.getElementById('checkBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const resultsModal = document.getElementById('resultsModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const closeResultsBtn = document.getElementById('closeResultsBtn');
-        const retakeQuizBtn = document.getElementById('retakeQuizBtn');
-
-        // Load questions from JSON file
-        async function loadQuestions() {
-            try {
-                // Try to load from questions.json
-                const response = await fetch('questions.json');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                questions = await response.json();
-                
-                if (!questions || questions.length === 0) {
-                    throw new Error('No questions found in JSON file');
-                }
-                
-                console.log(`✅ Successfully loaded ${questions.length} questions`);
-                initializeQuiz();
-                
-            } catch (error) {
-                console.error('Error loading questions:', error);
-                showError(`
-                    <h3>⚠️ Error Loading Questions</h3>
-                    <p>Could not load questions.json file. Make sure the file exists in the same directory as this HTML file.</p>
-                    <p><strong>Expected format:</strong> questions.json in the same folder</p>
-                    <p><strong>Error details:</strong> ${error.message}</p>
-                    <button onclick="location.reload()" class="btn-primary" style="margin-top: 20px;">Retry</button>
-                `);
+<script>
+    // ---------- DATA STRUCTURE: each JSON set stored separately ----------
+    let jsonSets = []; // each element: { id, name, questions: [] }
+    let nextSetId = 1;
+    
+    // Combined and filtered questions for display
+    let masterQuestions = [];      // flattened all questions (with sourceId reference)
+    let filteredQuestions = [];      // topic filtered
+    let currentIndex = 0;
+    let userSelections = {};         // key: filtered index -> array of selected letters 
+    let verifiedStatus = {};         // key: filtered index -> boolean 
+    let userCorrectness = {};        // key: filtered index -> boolean
+    
+    // Helper: add a new JSON set
+    function addJsonSet(questionsArray, setName = null) {
+        if (!Array.isArray(questionsArray) || questionsArray.length === 0) return false;
+        // Validate each question
+        for (let q of questionsArray) {
+            if (!q.text || !q.options || !q.answers) {
+                alert("Invalid question: each needs text, options (object), answers (array)");
+                return false;
             }
+            if (!q.topic) q.topic = "General";
         }
-
-        function showError(message) {
-            loadingContainer.innerHTML = `
-                <div class="error-message">
-                    ${message}
-                </div>
-            `;
-        }
-
-        function initializeQuiz() {
-            // Hide loading, show quiz
-            loadingContainer.style.display = 'none';
-            quizSection.style.display = 'block';
-            
-            // Initialize quiz state
-            currentQuestionIndex = 0;
-            userAnswers = {};
-            showingResult = false;
-            
-            // Display first question
-            displayQuestion();
-            updateProgress();
-            updateScore();
-        }
-
-        function displayQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                showResults();
-                return;
-            }
-            
-            const question = questions[currentQuestionIndex];
-            
-            // Update header
-            document.getElementById('questionBadge').textContent = `Question ${question.q_num || currentQuestionIndex + 1}`;
-            document.getElementById('questionCounter').textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
-            document.getElementById('questionText').textContent = question.text;
-            
-            // Clear and rebuild options
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            currentSelectedOptions.clear();
-            
-            // Load saved answers if any
-            const savedAnswers = userAnswers[currentQuestionIndex] || [];
-            
-            // Create option elements
-            for (const [letter, text] of Object.entries(question.options)) {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'option-item';
-                if (savedAnswers.includes(letter)) {
-                    optionDiv.classList.add('selected');
-                    currentSelectedOptions.add(letter);
-                }
-                if (showingResult) {
-                    optionDiv.classList.add('disabled');
-                    if (question.answers.includes(letter)) {
-                        optionDiv.classList.add('correct');
-                    } else if (savedAnswers.includes(letter) && !question.answers.includes(letter)) {
-                        optionDiv.classList.add('incorrect');
-                    }
-                }
-                
-                optionDiv.innerHTML = `
-                    <div class="option-letter">${letter}.</div>
-                    <div class="option-text">${escapeHtml(text)}</div>
-                `;
-                
-                if (!showingResult) {
-                    optionDiv.onclick = () => toggleOption(letter);
-                }
-                
-                optionsContainer.appendChild(optionDiv);
-            }
-            
-            // Hide feedback if not showing results
-            if (!showingResult) {
-                document.getElementById('feedbackSection').style.display = 'none';
-            }
-            
-            // Update button states
-            updateButtonStates();
-        }
-
-        function toggleOption(letter) {
-            if (showingResult) return;
-            
-            const optionDivs = document.querySelectorAll('.option-item');
-            
-            if (currentSelectedOptions.has(letter)) {
-                currentSelectedOptions.delete(letter);
-                optionDivs[getOptionIndex(letter)].classList.remove('selected');
-            } else {
-                currentSelectedOptions.add(letter);
-                optionDivs[getOptionIndex(letter)].classList.add('selected');
-            }
-        }
-
-        function getOptionIndex(letter) {
-            const letters = ['A', 'B', 'C', 'D', 'E'];
-            return letters.indexOf(letter);
-        }
-
-        function checkAnswer() {
-            if (showingResult) {
-                showNotification('Answer already checked! Move to next question.', 'info');
-                return;
-            }
-            
-            const selected = Array.from(currentSelectedOptions);
-            if (selected.length === 0) {
-                showNotification('Please select an answer before checking!', 'warning');
-                return;
-            }
-            
-            const question = questions[currentQuestionIndex];
-            const isCorrect = arraysEqual(selected.sort(), question.answers.sort());
-            
-            // Save answer
-            userAnswers[currentQuestionIndex] = selected;
-            showingResult = true;
-            
-            // Show feedback
-            const feedbackSection = document.getElementById('feedbackSection');
-            const feedbackMessage = document.getElementById('feedbackMessage');
-            
-            if (isCorrect) {
-                feedbackMessage.className = 'feedback-message correct';
-                feedbackMessage.innerHTML = `✅ Correct! ${getCorrectAnswerMessage(question)}`;
-            } else {
-                feedbackMessage.className = 'feedback-message incorrect';
-                feedbackMessage.innerHTML = `❌ Incorrect! The correct answer${question.answers.length > 1 ? 's are' : ' is'}: ${question.answers.join(', ')}`;
-            }
-            
-            feedbackSection.style.display = 'block';
-            
-            // Re-render question with correct/incorrect highlighting
-            displayQuestion();
-            updateProgress();
-            updateScore();
-            
-            // Disable check button after checking
-            checkBtn.disabled = true;
-        }
-
-        function getCorrectAnswerMessage(question) {
-            if (question.answers.length === 1) {
-                return `The correct answer is ${question.answers[0]}.`;
-            } else {
-                return `The correct answers are ${question.answers.join(', ')}.`;
-            }
-        }
-
-        function nextQuestion() {
-            if (!showingResult && currentQuestionIndex in userAnswers) {
-                showingResult = true;
-                displayQuestion();
-            }
-            
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                showingResult = false;
-                checkBtn.disabled = false;
-                displayQuestion();
-                updateProgress();
-            } else if (currentQuestionIndex === questions.length - 1 && showingResult) {
-                showResults();
-            } else if (!showingResult) {
-                showNotification('Please check your answer before moving to the next question!', 'warning');
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                showingResult = false;
-                checkBtn.disabled = false;
-                displayQuestion();
-                updateProgress();
-            }
-        }
-
-        function updateProgress() {
-            const answered = Object.keys(userAnswers).length;
-            const progress = (answered / questions.length) * 100;
-            const progressFill = document.getElementById('progressFill');
-            progressFill.style.width = `${progress}%`;
-            progressFill.textContent = `${Math.round(progress)}%`;
-            
-            document.getElementById('progressText').textContent = `📊 Progress: ${answered}/${questions.length}`;
-        }
-
-        function updateScore() {
-            let correctCount = 0;
-            for (let i = 0; i < questions.length; i++) {
-                const userAnswer = userAnswers[i];
-                if (userAnswer && arraysEqual(userAnswer.sort(), questions[i].answers.sort())) {
-                    correctCount++;
-                }
-            }
-            document.getElementById('scoreText').textContent = `⭐ Score: ${correctCount}/${questions.length}`;
-        }
-
-        function updateButtonStates() {
-            prevBtn.disabled = currentQuestionIndex === 0;
-        }
-
-        function resetQuiz() {
-            if (confirm('Are you sure you want to reset the quiz? All progress will be lost.')) {
-                currentQuestionIndex = 0;
-                userAnswers = {};
-                showingResult = false;
-                checkBtn.disabled = false;
-                displayQuestion();
-                updateProgress();
-                updateScore();
-                showNotification('Quiz has been reset!', 'success');
-            }
-        }
-
-        function showResults() {
-            let correctCount = 0;
-            const results = [];
-            
-            for (let i = 0; i < questions.length; i++) {
-                const userAnswer = userAnswers[i];
-                const isCorrect = userAnswer && arraysEqual(userAnswer.sort(), questions[i].answers.sort());
-                if (isCorrect) correctCount++;
-                
-                results.push({
-                    number: questions[i].q_num || i + 1,
-                    text: questions[i].text,
-                    userAnswer: userAnswer || ['Not answered'],
-                    correctAnswer: questions[i].answers,
-                    isCorrect: isCorrect
+        const setId = nextSetId++;
+        const setDisplayName = setName || `Set ${setId} (${questionsArray.length} q)`;
+        jsonSets.push({
+            id: setId,
+            name: setDisplayName,
+            questions: questionsArray
+        });
+        rebuildMasterList();
+        updateJsonBadgeUI();
+        refreshAllFromMaster();
+        return true;
+    }
+    
+    function removeJsonSet(setId) {
+        jsonSets = jsonSets.filter(s => s.id !== setId);
+        rebuildMasterList();
+        updateJsonBadgeUI();
+        refreshAllFromMaster();
+    }
+    
+    function rebuildMasterList() {
+        masterQuestions = [];
+        for (let set of jsonSets) {
+            for (let q of set.questions) {
+                masterQuestions.push({
+                    ...q,
+                    sourceSetId: set.id,
+                    originalText: q.text
                 });
             }
-            
-            const percentage = (correctCount / questions.length) * 100;
-            let grade = '';
-            let message = '';
-            
-            if (percentage >= 90) {
-                grade = 'A+ 🎉';
-                message = 'Excellent! You\'re well prepared for the exam!';
-            } else if (percentage >= 80) {
-                grade = 'A 📚';
-                message = 'Good job! A bit more practice and you\'ll ace it!';
-            } else if (percentage >= 70) {
-                grade = 'B 👍';
-                message = 'Nice work! Review the questions you missed.';
-            } else if (percentage >= 60) {
-                grade = 'C 📖';
-                message = 'Good effort! Study the topics you got wrong.';
+        }
+    }
+    
+    function updateJsonBadgeUI() {
+        const container = document.getElementById("jsonBadgeList");
+        if (jsonSets.length === 0) {
+            container.innerHTML = '<div class="json-badge">📄 No JSON sets loaded. Add one below.</div>';
+            return;
+        }
+        container.innerHTML = "";
+        jsonSets.forEach(set => {
+            const badge = document.createElement("div");
+            badge.className = "json-badge";
+            badge.innerHTML = `📁 ${escapeHtml(set.name)} <button class="remove-json-btn" data-id="${set.id}">✖</button>`;
+            badge.querySelector(".remove-json-btn").addEventListener("click", (e) => {
+                e.stopPropagation();
+                if(confirm(`Remove "${set.name}" and all its questions?`)) {
+                    removeJsonSet(set.id);
+                }
+            });
+            container.appendChild(badge);
+        });
+    }
+    
+    // Topic filter logic
+    function rebuildTopicFilters() {
+        const topicsSet = new Set();
+        masterQuestions.forEach(q => { topicsSet.add(q.topic || "General"); });
+        const container = document.getElementById("topicFilterContainer");
+        const allChip = container.querySelector('[data-topic="all"]');
+        const otherChips = Array.from(container.querySelectorAll('.topic-chip')).filter(ch => ch.getAttribute('data-topic') !== 'all');
+        otherChips.forEach(ch => ch.remove());
+        for (let topic of topicsSet) {
+            const chip = document.createElement("span");
+            chip.className = "topic-chip";
+            chip.setAttribute("data-topic", topic);
+            chip.innerText = topic;
+            chip.addEventListener("click", (e) => {
+                document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                const selectedTopic = chip.getAttribute('data-topic');
+                applyTopicFilter(selectedTopic === 'all' ? null : selectedTopic);
+            });
+            container.appendChild(chip);
+        }
+        if(allChip) {
+            allChip.addEventListener("click", () => {
+                document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('selected'));
+                allChip.classList.add('selected');
+                applyTopicFilter(null);
+            });
+        }
+    }
+    
+    function applyTopicFilter(topic) {
+        if (!topic) {
+            filteredQuestions = [...masterQuestions];
+        } else {
+            filteredQuestions = masterQuestions.filter(q => (q.topic || "General") === topic);
+        }
+        // reset quiz state for new filtered set
+        currentIndex = 0;
+        userSelections = {};
+        verifiedStatus = {};
+        userCorrectness = {};
+        updateStatsUI();
+        if(filteredQuestions.length === 0) {
+            document.getElementById("quizSection").style.display = "none";
+            document.getElementById("totalQty").innerText = "0";
+            return;
+        }
+        document.getElementById("quizSection").style.display = "block";
+        renderCurrentQuestion();
+        updateGlobalProgress();
+    }
+    
+    function updateStatsUI() {
+        document.getElementById("totalQty").innerText = filteredQuestions.length;
+        const answered = Object.keys(userSelections).length;
+        document.getElementById("answeredCount").innerText = answered;
+        let correctTotal = 0;
+        for(let idx in userCorrectness) {
+            if(userCorrectness[idx] === true) correctTotal++;
+        }
+        document.getElementById("correctCount").innerText = correctTotal;
+    }
+    
+    function updateGlobalProgress() {
+        let total = filteredQuestions.length;
+        let answeredCount = Object.keys(userSelections).length;
+        let percent = total === 0 ? 0 : (answeredCount / total) * 100;
+        const fill = document.getElementById("progressFill");
+        fill.style.width = `${percent}%`;
+        fill.innerText = `${Math.round(percent)}%`;
+        document.getElementById("questionIndexLabel").innerHTML = `Question ${currentIndex+1} / ${total}`;
+    }
+    
+    function renderCurrentQuestion() {
+        if(!filteredQuestions.length) return;
+        const q = filteredQuestions[currentIndex];
+        if(!q) return;
+        const topicHtml = q.topic ? `<span style="font-size:0.7rem; background:#334155; border-radius:20px; padding:2px 10px; margin-left:12px;">${escapeHtml(q.topic)}</span>` : "";
+        document.getElementById("questionText").innerHTML = escapeHtml(q.text) + topicHtml;
+        const container = document.getElementById("optionsContainer");
+        container.innerHTML = "";
+        const letters = Object.keys(q.options);
+        const savedSelection = userSelections[currentIndex] || [];
+        const isVerified = verifiedStatus[currentIndex] || false;
+        
+        const verifLabel = document.getElementById("verificationStatusLabel");
+        if(isVerified) {
+            const isCorrect = userCorrectness[currentIndex];
+            verifLabel.innerHTML = isCorrect ? "✅ Verified: Correct" : "❌ Verified: Incorrect";
+            verifLabel.style.color = isCorrect ? "#86efac" : "#fca5a5";
+        } else {
+            verifLabel.innerHTML = "⏳ Not verified yet";
+            verifLabel.style.color = "#94a3b8";
+        }
+        
+        for(let letter of letters) {
+            const optionDiv = document.createElement("div");
+            optionDiv.className = "option-item";
+            if(savedSelection.includes(letter)) optionDiv.classList.add("selected");
+            if(isVerified) {
+                const correctAnswers = q.answers;
+                if(correctAnswers.includes(letter)) {
+                    optionDiv.classList.add("verify-correct");
+                } else if(savedSelection.includes(letter) && !correctAnswers.includes(letter)) {
+                    optionDiv.classList.add("verify-incorrect");
+                }
+                optionDiv.classList.add("disabled-option");
+                optionDiv.style.cursor = "default";
             } else {
-                grade = 'Need Improvement 💪';
-                message = 'Keep practicing! Review all questions and try again.';
+                optionDiv.style.cursor = "pointer";
+                optionDiv.onclick = () => toggleOption(letter);
             }
-            
-            const resultsHTML = `
-                <div class="results-summary">
-                    <div class="score-circle">
-                        <div class="score-number">${correctCount}/${questions.length}</div>
-                        <div class="score-percentage">${percentage.toFixed(1)}%</div>
-                        <div class="score-grade">${grade}</div>
-                    </div>
-                    <p class="results-message">${message}</p>
-                </div>
-                <div class="results-details">
-                    <h3>Detailed Results:</h3>
-                    ${results.map(r => `
-                        <div class="result-item ${r.isCorrect ? 'result-correct' : 'result-incorrect'}">
-                            <div class="result-header">
-                                <span class="result-status">${r.isCorrect ? '✓' : '✗'}</span>
-                                <span class="result-number">Question ${r.number}</span>
-                            </div>
-                            <div class="result-text">${escapeHtml(r.text.substring(0, 100))}${r.text.length > 100 ? '...' : ''}</div>
-                            <div class="result-answers">
-                                <div><strong>Your answer:</strong> ${r.userAnswer.join(', ')}</div>
-                                <div><strong>Correct answer:</strong> ${r.correctAnswer.join(', ')}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            document.getElementById('resultsBody').innerHTML = resultsHTML;
-            resultsModal.style.display = 'block';
+            optionDiv.innerHTML = `<div class="option-letter">${letter}.</div><div class="option-text">${escapeHtml(q.options[letter])}</div>`;
+            container.appendChild(optionDiv);
         }
-
-        function arraysEqual(a, b) {
-            if (a.length !== b.length) return false;
-            for (let i = 0; i < a.length; i++) {
-                if (a[i] !== b[i]) return false;
+        
+        const feedbackDiv = document.getElementById("feedbackPanel");
+        if(isVerified) {
+            const isAnsCorrect = userCorrectness[currentIndex];
+            const correctAnswersList = q.answers.join(", ");
+            const userAnswersList = (userSelections[currentIndex] || []).join(", ") || "(none)";
+            if(isAnsCorrect) {
+                feedbackDiv.innerHTML = `<span style="color:#4ade80;">✓ Correct! Your answer: ${userAnswersList} matches correct answer(s): ${correctAnswersList}</span>`;
+            } else {
+                feedbackDiv.innerHTML = `<span style="color:#f87171;">✘ Incorrect. Your answer: ${userAnswersList} | Correct: ${correctAnswersList}. ${q.explanation ? 'Explanation: ' + escapeHtml(q.explanation) : ''}</span>`;
             }
-            return true;
+            feedbackDiv.style.display = "block";
+            document.getElementById("postSubmitHint").innerHTML = "✅ Answer verified. Use 'Reset Quiz' to unverify all answers.";
+        } else {
+            feedbackDiv.style.display = "none";
+            document.getElementById("postSubmitHint").innerHTML = "📝 Select answer(s) and click 'Submit & Verify' to check correctness.";
         }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        updateGlobalProgress();
+        updateStatsUI();
+    }
+    
+    function toggleOption(letter) {
+        if(verifiedStatus[currentIndex]) {
+            alert("Answer already verified for this question. Use 'Reset Quiz' to modify answers.");
+            return;
         }
-
-        function showNotification(message, type) {
-            // Create temporary notification
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 20px;
-                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : type === 'warning' ? '#ffc107' : '#17a2b8'};
-                color: ${type === 'warning' ? '#333' : 'white'};
-                border-radius: 10px;
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                font-weight: 500;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
+        let currentSelections = userSelections[currentIndex] ? [...userSelections[currentIndex]] : [];
+        if(currentSelections.includes(letter)) {
+            currentSelections = currentSelections.filter(l => l !== letter);
+        } else {
+            currentSelections.push(letter);
         }
-
-        // Event listeners
-        prevBtn.addEventListener('click', prevQuestion);
-        nextBtn.addEventListener('click', nextQuestion);
-        checkBtn.addEventListener('click', checkAnswer);
-        resetBtn.addEventListener('click', resetQuiz);
-        
-        closeModalBtn.addEventListener('click', () => {
-            resultsModal.style.display = 'none';
-        });
-        
-        closeResultsBtn.addEventListener('click', () => {
-            resultsModal.style.display = 'none';
-        });
-        
-        retakeQuizBtn.addEventListener('click', () => {
-            resultsModal.style.display = 'none';
-            resetQuiz();
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === resultsModal) {
-                resultsModal.style.display = 'none';
+        userSelections[currentIndex] = currentSelections;
+        renderCurrentQuestion();
+    }
+    
+    function verifyCurrentAnswer() {
+        if(filteredQuestions.length === 0) return;
+        if(verifiedStatus[currentIndex]) {
+            alert("This question was already verified. Reset quiz to re-attempt.");
+            return;
+        }
+        const q = filteredQuestions[currentIndex];
+        const selected = userSelections[currentIndex] || [];
+        if(selected.length === 0) {
+            alert("Please select at least one option before verification.");
+            return;
+        }
+        const correctSorted = [...q.answers].sort();
+        const selectedSorted = [...selected].sort();
+        const isCorrect = JSON.stringify(correctSorted) === JSON.stringify(selectedSorted);
+        userCorrectness[currentIndex] = isCorrect;
+        verifiedStatus[currentIndex] = true;
+        updateStatsUI();
+        renderCurrentQuestion();
+    }
+    
+    function nextQuestion() {
+        if(filteredQuestions.length === 0) return;
+        if(currentIndex + 1 < filteredQuestions.length) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            if(currentIndex === filteredQuestions.length - 1) {
+                alert("You've reached the last question. Click 'Show Results' for summary.");
             }
-        });
-
-        // Load questions on page load
-        loadQuestions();
-    </script>
+        }
+    }
+    
+    function prevQuestion() {
+        if(currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+        }
+    }
+    
+    function resetQuiz() {
+        if(confirm("Reset all progress? All answers and verifications will be cleared for current topic filter.")) {
+            userSelections = {};
+            verifiedStatus = {};
+            userCorrectness = {};
+            currentIndex = 0;
+            renderCurrentQuestion();
+            updateStatsUI();
+            updateGlobalProgress();
+        }
+    }
+    
+    function showFinalResults() {
+        if(filteredQuestions.length === 0) {
+            alert("No questions to show results.");
+            return;
+        }
+        let total = filteredQuestions.length;
+        let correctCount = 0;
+        let resultsHtml = `<div style="color:#e2e8f0;"><h3>📋 Performance Summary</h3><p>Total Questions: ${total}</p>`;
+        for(let i=0; i<filteredQuestions.length; i++) {
+            if(userCorrectness[i] === true) correctCount++;
+        }
+        let percentage = total === 0 ? 0 : (correctCount/total)*100;
+        resultsHtml += `<p>⭐ Correct (verified): ${correctCount} / ${total} (${percentage.toFixed(1)}%)</p>`;
+        resultsHtml += `<hr style="margin:16px 0; border-color:#334155;">`;
+        resultsHtml += `<div style="max-height: 320px; overflow-y:auto;">`;
+        for(let i=0; i<filteredQuestions.length; i++) {
+            const q = filteredQuestions[i];
+            const status = verifiedStatus[i] ? (userCorrectness[i] ? "✓ Correct" : "✗ Wrong") : "⚪ Not verified";
+            const userAns = (userSelections[i] || []).join(", ") || "—";
+            const correctAns = q.answers.join(", ");
+            resultsHtml += `<div style="background:#111827; margin-bottom:12px; padding:12px; border-radius:20px;">
+                <div><strong>Q${i+1}</strong> ${escapeHtml(q.text.substring(0,80))} <span style="color:#a78bfa;">[${status}]</span></div>
+                <div style="font-size:0.75rem;">Your: ${userAns} | Correct: ${correctAns}</div>
+                ${q.explanation ? `<div style="font-size:0.7rem; color:#9ca3af;">💡 ${escapeHtml(q.explanation)}</div>` : ''}
+            </div>`;
+        }
+        resultsHtml += `</div><div style="margin-top:16px;">🔁 Use Reset Quiz to retry.</div></div>`;
+        document.getElementById("modalResultsBody").innerHTML = resultsHtml;
+        document.getElementById("resultsModal").style.display = "flex";
+    }
+    
+    function refreshAllFromMaster() {
+        if(masterQuestions.length === 0) {
+            document.getElementById("quizSection").style.display = "none";
+            document.getElementById("totalQty").innerText = "0";
+            document.getElementById("jsonBadgeList").innerHTML = '<div class="json-badge">📄 No JSON sets loaded. Add one below.</div>';
+            document.getElementById("topicFilterContainer").querySelectorAll('.topic-chip:not([data-topic="all"])').forEach(ch => ch.remove());
+            return;
+        }
+        rebuildTopicFilters();
+        applyTopicFilter(null);
+        updateStatsUI();
+    }
+    
+    // Handle adding new JSON via textarea
+    function handleAddJson() {
+        const rawJson = document.getElementById("newJsonInput").value.trim();
+        if(!rawJson) {
+            alert("Paste a JSON array of questions.");
+            return;
+        }
+        let parsed;
+        try {
+            parsed = JSON.parse(rawJson);
+            if (!Array.isArray(parsed)) throw new Error("Must be an array");
+        } catch(e) {
+            alert("Invalid JSON format: " + e.message);
+            return;
+        }
+        const success = addJsonSet(parsed, `Custom Set (${parsed.length} q)`);
+        if(success) {
+            document.getElementById("newJsonInput").value = "";
+        }
+    }
+    
+    function escapeHtml(str) { if(!str) return ""; return String(str).replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;});}
+    
+    // Load the two default JSON sets exactly as provided
+    function loadPresetJsonSets() {
+        const sampleSet1 = [
+            { "q_num": 1, "text": "Which interface is used for batch Apex in Salesforce?", "options": { "A": "Database.Batchable", "B": "Schedulable", "C": "Queueable", "D": "Iterable" }, "answers": ["A"], "topic": "Apex", "explanation": "Database.Batchable interface is required for batch classes." },
+            { "text": "What does SOQL injection prevent?", "options": { "A": "DML statements", "B": "Dynamic SOQL escaping", "C": "Cross-site scripting", "D": "All of above" }, "answers": ["B"], "topic": "Security", "explanation": "Using escapeSingleQuotes prevents SOQL injection." }
+        ];
+        const sampleSet2 = [
+            { "text": "Platform Events are used for? (choose two)", "options": { "A": "Real-time decoupled communication", "B": "Synchronous callouts", "C": "Publish/Subscribe model", "D": "Batch data loads" }, "answers": ["A","C"], "topic": "Integration", "explanation": "Platform Events follow event-driven messaging." },
+            { "text": "Which annotation is used to expose Apex REST method?", "options": { "A": "@AuraEnabled", "B": "@RestResource", "C": "@HttpPost", "D": "@RemoteAction" }, "answers": ["B"], "topic": "API", "explanation": "@RestResource defines REST web service class." }
+        ];
+        addJsonSet(sampleSet1, "PD2 Core Set");
+        addJsonSet(sampleSet2, "Integration & API Set");
+    }
+    
+    // Event listeners
+    document.getElementById("addJsonBtn").addEventListener("click", handleAddJson);
+    document.getElementById("prevBtn").addEventListener("click", prevQuestion);
+    document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+    document.getElementById("submitCheckBtn").addEventListener("click", verifyCurrentAnswer);
+    document.getElementById("resetAllBtn").addEventListener("click", resetQuiz);
+    document.getElementById("showFinalResultsBtn").addEventListener("click", showFinalResults);
+    document.getElementById("closeModalBtn").addEventListener("click", () => document.getElementById("resultsModal").style.display = "none");
+    window.onclick = function(e) { if(e.target === document.getElementById("resultsModal")) document.getElementById("resultsModal").style.display = "none"; };
+    
+    // Initialize
+    loadPresetJsonSets();
+</script>
 </body>
 </html>
