@@ -9,756 +9,505 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
-            padding: 24px 16px;
-            color: #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 32px 16px;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        .screen { width: 100%; max-width: 680px; animation: fadeUp 0.35s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-        /* ── Header ── */
-        .header {
-            text-align: center;
-            padding: 28px 20px 22px;
-            background: rgba(255,255,255,0.07);
-            border-radius: 28px;
-            border: 1px solid rgba(255,255,255,0.12);
-            backdrop-filter: blur(10px);
-            margin-bottom: 28px;
-        }
-        .header h1 {
-            font-size: 1.9rem;
+        /* ── SCREEN 1 ── */
+        .sel-header { text-align: center; margin-bottom: 36px; }
+        .sel-header h1 {
+            font-size: 1.75rem; font-weight: 700;
             background: linear-gradient(135deg, #c084fc, #60a5fa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
             margin-bottom: 6px;
         }
-        .header p { color: #94a3b8; font-size: 0.9rem; }
+        .sel-header p { color: #64748b; font-size: 0.88rem; }
 
-        /* ── Panel card ── */
-        .card {
-            background: #1e293b;
-            border-radius: 24px;
-            padding: 22px 24px;
-            border: 1px solid #334155;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-weight: 700;
-            font-size: 1rem;
-            color: #cbd5e1;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
 
-        /* ── File selector ── */
-        .file-set-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 14px;
+        .set-card {
+            background: #1e293b; border: 2px solid #334155; border-radius: 20px;
+            padding: 28px 20px; cursor: pointer; transition: all 0.2s;
+            text-align: center; user-select: none; position: relative;
         }
-
-        .file-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 40px;
-            padding: 9px 18px;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-            font-size: 0.88rem;
-            color: #94a3b8;
-        }
-        .file-toggle input[type="checkbox"] { display: none; }
-        .file-toggle.checked {
-            background: #1d4ed8;
-            border-color: #3b82f6;
-            color: #fff;
-            box-shadow: 0 0 8px #3b82f640;
-        }
-        .file-toggle .checkmark {
-            width: 16px; height: 16px;
-            border-radius: 4px;
-            border: 2px solid #475569;
+        .set-card:hover { border-color: #475569; background: #243047; }
+        .set-card.selected { border-color: #6d28d9; background: #1e1b4b; }
+        .set-card.selected::after {
+            content: "✓"; position: absolute; top: 12px; right: 14px;
+            background: #7c3aed; color: white; font-size: 0.72rem; font-weight: 700;
+            width: 22px; height: 22px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.65rem;
-            flex-shrink: 0;
         }
-        .file-toggle.checked .checkmark {
-            background: #3b82f6;
-            border-color: #3b82f6;
-        }
-        .file-badge {
-            font-size: 0.72rem;
-            background: #334155;
-            border-radius: 20px;
-            padding: 2px 8px;
-            margin-left: 4px;
-        }
-        .file-toggle.checked .file-badge { background: #1e40af; }
+        .set-icon { font-size: 2.2rem; margin-bottom: 14px; }
+        .set-name { color: #e2e8f0; font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; }
+        .set-count { color: #64748b; font-size: 0.8rem; }
+        .set-card.selected .set-name { color: #a78bfa; }
+        .set-card.selected .set-count { color: #7c6fcd; }
 
-        /* upload button */
-        .upload-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #0f172a;
-            border: 1px dashed #475569;
-            border-radius: 40px;
-            padding: 9px 18px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #64748b;
-            transition: 0.2s;
-        }
-        .upload-label:hover { border-color: #2dd4bf; color: #2dd4bf; }
-        .upload-label input { display: none; }
+        .set-card.error-card { cursor: default; opacity: 0.5; }
 
-        .load-btn {
-            background: linear-gradient(95deg, #8b5cf6, #3b82f6);
-            border: none;
-            padding: 10px 26px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.2s;
+        .start-btn {
+            width: 100%; padding: 16px;
+            background: linear-gradient(95deg, #7c3aed, #2563eb);
+            border: none; border-radius: 16px;
+            color: white; font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s;
         }
-        .load-btn:hover { transform: scale(1.02); }
-        .load-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .start-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+        .start-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+        .sel-note { text-align: center; color: #475569; font-size: 0.78rem; margin-top: 14px; }
 
-        /* stats strip */
+        /* ── SCREEN 2 ── */
+        .quiz-topbar {
+            display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+        }
+        .back-btn {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 8px 14px; color: #94a3b8; font-size: 0.85rem;
+            cursor: pointer; transition: 0.18s; white-space: nowrap; flex-shrink: 0;
+        }
+        .back-btn:hover { border-color: #475569; color: #e2e8f0; }
+        .quiz-title { color: #64748b; font-size: 0.82rem; }
+        .quiz-title strong { color: #cbd5e1; }
+
         .stats-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            background: #0f172a;
-            border-radius: 16px;
-            padding: 10px 18px;
-            font-size: 0.82rem;
-            color: #64748b;
-            margin-top: 14px;
+            background: #0f172a; border-radius: 14px; padding: 10px 18px;
+            display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.78rem;
+            color: #475569; margin-bottom: 16px;
         }
-        .stats-strip strong { color: #e2e8f0; }
+        .stats-strip strong { color: #cbd5e1; }
 
-        /* ── Progress ── */
         .progress-bar {
-            background: #0f172a;
-            border-radius: 20px;
-            height: 26px;
-            overflow: hidden;
-            margin-bottom: 10px;
+            background: #1e293b; border-radius: 20px; height: 22px;
+            overflow: hidden; margin-bottom: 8px;
         }
         .progress-fill {
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 0.78rem;
-            transition: width 0.4s ease;
-            min-width: 2rem;
+            background: linear-gradient(90deg, #7c3aed, #2563eb);
+            height: 100%; display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 0.72rem;
+            transition: width 0.4s ease; min-width: 2rem;
         }
         .progress-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.82rem;
-            color: #64748b;
+            display: flex; justify-content: space-between;
+            font-size: 0.78rem; color: #475569; margin-bottom: 18px;
         }
 
-        /* ── Question card ── */
         .question-card {
-            background: #0f172a;
-            border-radius: 24px;
-            padding: 26px;
-            border: 1px solid #334155;
-            margin-bottom: 18px;
+            background: #1e293b; border-radius: 24px;
+            padding: 26px; border: 1px solid #334155; margin-bottom: 16px;
         }
-
-        .question-meta {
-            font-size: 0.75rem;
-            color: #475569;
-            margin-bottom: 10px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        .q-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
         .q-tag {
-            background: #1e293b;
-            border-radius: 20px;
-            padding: 2px 10px;
-            border: 1px solid #334155;
+            background: #0f172a; color: #64748b; font-size: 0.72rem;
+            border: 1px solid #334155; border-radius: 20px; padding: 3px 10px;
         }
+        .q-tag.multi { color: #fbbf24; border-color: #78350f; background: #1c1008; }
 
         .question-text {
-            font-size: 1.15rem;
-            font-weight: 500;
-            line-height: 1.55;
-            color: #f1f5f9;
-            margin-bottom: 22px;
-            white-space: pre-wrap;
+            font-size: 1.08rem; font-weight: 500; color: #f1f5f9;
+            line-height: 1.6; margin-bottom: 22px; white-space: pre-wrap;
         }
 
-        /* options */
-        .options-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
 
-        .option {
-            background: #1e293b;
-            border: 1.5px solid #334155;
-            border-radius: 16px;
-            padding: 13px 18px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.18s;
-            line-height: 1.45;
+        .opt {
+            background: #0f172a; border: 1.5px solid #334155; border-radius: 14px;
+            padding: 12px 16px; display: flex; align-items: flex-start; gap: 12px;
+            cursor: pointer; transition: all 0.16s; line-height: 1.5;
         }
-        .option:hover:not(.locked) { background: #263354; border-color: #6d28d9; }
-        .option.selected   { background: #1e3a5f; border-color: #3b82f6; }
-        .option.locked     { cursor: default; }
-        .option.show-correct   { background: #14532d; border-color: #22c55e !important; }
-        .option.show-wrong     { background: #7f1d1d; border-color: #ef4444 !important; }
+        .opt:hover:not(.locked) { background: #1a2744; border-color: #6d28d9; }
+        .opt.selected { background: #0f1e3d; border-color: #3b82f6; }
+        .opt.locked { cursor: default; }
+        .opt.show-correct { background: #052e16; border-color: #16a34a; }
+        .opt.show-wrong   { background: #3b0a0a; border-color: #dc2626; }
 
-        .opt-letter {
-            font-weight: 700;
-            color: #a78bfa;
-            min-width: 28px;
-            font-size: 1rem;
-            flex-shrink: 0;
-            padding-top: 1px;
-        }
-        .opt-text { font-size: 0.9rem; color: #cbd5e1; white-space: pre-wrap; }
+        .opt-letter { color: #a78bfa; font-weight: 700; font-size: 0.95rem; min-width: 24px; flex-shrink: 0; padding-top: 1px; }
+        .opt-text   { color: #cbd5e1; font-size: 0.88rem; white-space: pre-wrap; }
 
-        /* feedback */
         .feedback {
-            background: #111827;
-            border-left: 4px solid #8b5cf6;
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 0.88rem;
-            color: #d1d5db;
-            margin-top: 4px;
-            display: none;
+            border-radius: 12px; padding: 13px 16px; font-size: 0.85rem;
+            line-height: 1.55; margin-top: 2px; display: none;
         }
-        .feedback.correct { border-left-color: #22c55e; }
-        .feedback.wrong   { border-left-color: #ef4444; }
+        .feedback.correct { background: #052e16; border-left: 3px solid #16a34a; color: #bbf7d0; border-radius: 0 12px 12px 0; }
+        .feedback.wrong   { background: #3b0a0a; border-left: 3px solid #dc2626; color: #fecaca; border-radius: 0 12px 12px 0; }
+        .hint { text-align: center; font-size: 0.76rem; color: #334155; margin-top: 10px; }
 
-        /* hint */
-        .hint-line {
-            text-align: center;
-            font-size: 0.78rem;
-            color: #475569;
-            margin-top: 8px;
-        }
-
-        /* ── Nav buttons ── */
-        .nav-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 4px;
-        }
+        .nav-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .btn {
-            padding: 11px 22px;
-            border-radius: 40px;
-            border: none;
-            font-weight: 600;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: 0.18s;
+            padding: 11px 22px; border-radius: 40px; border: none;
+            font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.16s;
         }
-        .btn:disabled { opacity: 0.35; cursor: not-allowed; }
-        .btn-gray    { background: #334155; color: #e2e8f0; }
-        .btn-blue    { background: #2563eb; color: #fff; }
-        .btn-green   { background: #059669; color: #fff; }
-        .btn-amber   { background: #d97706; color: #fff; }
-        .btn-purple  { background: #7c3aed; color: #fff; }
+        .btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .btn:not(:disabled):hover { filter: brightness(1.12); }
+        .btn-gray   { background: #334155; color: #e2e8f0; }
+        .btn-blue   { background: #1d4ed8; color: #fff; }
+        .btn-green  { background: #065f46; color: #fff; }
+        .btn-amber  { background: #92400e; color: #fff; }
+        .btn-purple { background: #5b21b6; color: #fff; }
 
-        /* ── Empty / loading states ── */
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #475569;
+        /* Results modal */
+        .modal-wrap {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.72); z-index: 100;
+            align-items: flex-start; justify-content: center;
+            padding: 40px 16px; overflow-y: auto;
         }
-        .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
-        .loading { display: flex; align-items: center; gap: 10px; color: #64748b; font-size: 0.9rem; }
-        .spinner {
-            width: 18px; height: 18px;
-            border: 2px solid #334155;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── Modal ── */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(6px);
-            z-index: 100;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 30px 16px;
-            overflow-y: auto;
-        }
-        .modal-overlay.open { display: flex; }
+        .modal-wrap.open { display: flex; }
         .modal-box {
-            background: #1e293b;
-            border-radius: 24px;
-            border: 1px solid #475569;
-            padding: 26px;
-            width: 100%;
-            max-width: 740px;
-            animation: slideUp 0.25s ease;
+            background: #1e293b; border-radius: 24px; border: 1px solid #334155;
+            padding: 26px; width: 100%; max-width: 680px; animation: fadeUp 0.25s ease;
         }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
-        .modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 18px; color: #f1f5f9; }
-        .result-item {
-            background: #0f172a;
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-        }
-        .result-item .ri-top { display: flex; justify-content: space-between; margin-bottom: 4px; color: #cbd5e1; }
-        .result-item .ri-ans { font-size: 0.78rem; color: #64748b; }
-        .score-summary {
-            background: #0f172a;
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 18px;
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-        .score-big { font-size: 2rem; font-weight: 800; }
-        .score-label { font-size: 0.8rem; color: #64748b; }
+        .modal-title { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin-bottom: 18px; }
+        .score-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+        .score-box { background: #0f172a; border-radius: 14px; padding: 14px 20px; flex: 1; min-width: 90px; }
+        .score-num { font-size: 1.9rem; font-weight: 800; color: #e2e8f0; }
+        .score-lbl { font-size: 0.72rem; color: #475569; margin-top: 2px; }
+        .result-item { background: #0f172a; border-radius: 12px; padding: 11px 14px; margin-bottom: 8px; }
+        .ri-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; font-size: 0.83rem; color: #cbd5e1; margin-bottom: 4px; }
+        .ri-ans { font-size: 0.75rem; color: #475569; }
+        .results-scroll { max-height: 340px; overflow-y: auto; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
 
-        @media (max-width: 600px) {
-            .question-text { font-size: 1rem; }
-            .header h1 { font-size: 1.4rem; }
+        @media (max-width: 480px) {
+            .set-grid { grid-template-columns: 1fr; }
+            .question-text { font-size: 0.98rem; }
         }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <!-- Header -->
-    <div class="header">
+<!-- ══════════════════ SCREEN 1: Set Selection ══════════════════ -->
+<div class="screen" id="screen1">
+    <div class="sel-header">
         <h1>📚 PD2 Exam Simulator</h1>
-        <p>Load question sets · Select options · Submit &amp; verify your answers</p>
+        <p>Choose one or both question sets, then start the quiz</p>
     </div>
 
-    <!-- File Selector Panel -->
-    <div class="card" id="filePanel">
-        <div class="card-title">🗂️ Question Sets</div>
-
-        <div class="file-set-row" id="fileToggleRow">
-            <!-- built-in set toggles injected here -->
-        </div>
-
-        <!-- Upload custom JSON -->
-        <label class="upload-label">
-            <input type="file" id="uploadInput" accept=".json" multiple>
-            ➕ Upload custom JSON file(s)
-        </label>
-
-        <br><br>
-        <button class="load-btn" id="loadBtn">▶ Load Selected Sets</button>
-
-        <div class="stats-strip" id="statsStrip">
-            <span>📚 Total: <strong id="totalQty">0</strong></span>
-            <span>✅ Answered: <strong id="answeredQty">0</strong></span>
-            <span>⭐ Correct: <strong id="correctQty">0</strong></span>
-            <span id="setNames" style="color:#475569;"></span>
-        </div>
+    <div class="set-grid" id="setGrid">
+        <div class="set-card error-card"><div class="set-icon">⏳</div><div class="set-name">Loading…</div></div>
+        <div class="set-card error-card"><div class="set-icon">⏳</div><div class="set-name">Loading…</div></div>
     </div>
 
-    <!-- Quiz Area -->
-    <div id="quizArea">
-        <div class="empty-state">
-            <div class="icon">📝</div>
-            <div>Select one or more question sets above and click <strong>Load Selected Sets</strong></div>
-        </div>
-    </div>
-
+    <button class="start-btn" id="startBtn" disabled>Select a set to start →</button>
+    <p class="sel-note" id="selNote">No sets selected</p>
 </div>
 
-<!-- Results Modal -->
-<div class="modal-overlay" id="resultsModal">
+<!-- ══════════════════ SCREEN 2: Quiz ══════════════════ -->
+<div class="screen" id="screen2" style="display:none;">
+    <div class="quiz-topbar">
+        <button class="back-btn" id="backBtn">← Sets</button>
+        <div class="quiz-title" id="quizTitle"></div>
+    </div>
+
+    <div class="stats-strip">
+        <span>Total <strong id="statTotal">0</strong></span>
+        <span>Answered <strong id="statAnswered">0</strong></span>
+        <span>Correct <strong id="statCorrect">0</strong></span>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progressFill">0%</div></div>
+    <div class="progress-meta">
+        <span id="qLabel">Q 1 / 0</span>
+        <span id="verifLabel">Not verified</span>
+    </div>
+
+    <div class="question-card">
+        <div class="q-meta" id="qMeta"></div>
+        <div class="question-text" id="qText"></div>
+        <div class="options-list" id="optsList"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="hint" id="hint"></div>
+    </div>
+
+    <div class="nav-row">
+        <button class="btn btn-gray"   id="prevBtn">◀ Prev</button>
+        <button class="btn btn-blue"   id="submitBtn">✓ Submit</button>
+        <button class="btn btn-green"  id="nextBtn">Next ▶</button>
+        <button class="btn btn-amber"  id="resetBtn">⟳ Reset</button>
+        <button class="btn btn-purple" id="resultsBtn">🏆 Results</button>
+    </div>
+</div>
+
+<!-- Results modal -->
+<div class="modal-wrap" id="modal">
     <div class="modal-box">
-        <div class="modal-title">📊 Quiz Results</div>
-        <div id="modalBody"></div>
-        <div style="margin-top:18px; display:flex; gap:10px;">
-            <button class="btn btn-gray" id="closeModal">Close</button>
-            <button class="btn btn-amber" id="resetFromModal">⟳ Reset &amp; Retry</button>
+        <div class="modal-title">📊 Results</div>
+        <div class="score-row" id="scoreRow"></div>
+        <div class="results-scroll" id="resultsList"></div>
+        <div class="modal-btns">
+            <button class="btn btn-gray"  id="closeModal">Close</button>
+            <button class="btn btn-amber" id="resetFromModal">⟳ Reset</button>
         </div>
     </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  CONFIG: built-in JSON file paths (relative to this HTML)
-// ═══════════════════════════════════════════════════════
-const BUILTIN_SETS = [
-    { id: "set1", label: "Set 1 – PD2 Core",     file: "questions1.json" },
-    { id: "set2", label: "Set 2 – Security & API", file: "questions2.json" },
+/* ══ CONFIG ══ */
+const SETS_CONFIG = [
+    { id: "s1", label: "Set 1 – PD2 Core",       icon: "📘", file: "questions1.json" },
+    { id: "s2", label: "Set 2 – Security & API",  icon: "🔐", file: "questions2.json" },
 ];
 
-// ═══════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════
-let loadedSets   = [];   // { id, label, questions:[] }
-let activeQ      = [];   // flattened, filtered questions
-let idx          = 0;
-let selections   = {};   // idx → [letters]
-let verified     = {};   // idx → bool
-let correctness  = {};   // idx → bool
+/* ══ STATE ══ */
+let loadedSets  = {};
+let selectedIds = new Set();
+let activeQ     = [];
+let idx         = 0;
+let selections  = {};
+let verified    = {};
+let correctness = {};
 
-// ═══════════════════════════════════════════════════════
-//  BOOT: render built-in toggles
-// ═══════════════════════════════════════════════════════
-(function buildToggles() {
-    const row = document.getElementById("fileToggleRow");
-    BUILTIN_SETS.forEach(set => {
-        const label = document.createElement("label");
-        label.className = "file-toggle";
-        label.dataset.id = set.id;
-        label.innerHTML = `
-            <input type="checkbox" value="${set.id}">
-            <span class="checkmark">✓</span>
-            <span>${set.label}</span>
-            <span class="file-badge" id="badge-${set.id}">—</span>`;
-        label.querySelector("input").addEventListener("change", e => {
-            label.classList.toggle("checked", e.target.checked);
-        });
-        row.appendChild(label);
+/* ══ BOOT: load all JSON sets ══ */
+(async () => {
+    const results = await Promise.allSettled(
+        SETS_CONFIG.map(cfg =>
+            fetch(cfg.file).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+        )
+    );
+    const grid = document.getElementById("setGrid");
+    grid.innerHTML = "";
+    results.forEach((res, i) => {
+        const cfg = SETS_CONFIG[i];
+        const card = document.createElement("div");
+        if (res.status === "fulfilled") {
+            const qs = normalise(res.value);
+            loadedSets[cfg.id] = { label: cfg.label, questions: qs };
+            card.className = "set-card";
+            card.dataset.id = cfg.id;
+            card.innerHTML = `<div class="set-icon">${cfg.icon}</div>
+                <div class="set-name">${cfg.label}</div>
+                <div class="set-count">${qs.length} questions</div>`;
+            card.addEventListener("click", () => toggleSet(cfg.id, card));
+        } else {
+            card.className = "set-card error-card";
+            card.innerHTML = `<div class="set-icon">⚠️</div>
+                <div class="set-name">${cfg.label}</div>
+                <div class="set-count">Could not load file</div>`;
+        }
+        grid.appendChild(card);
     });
 })();
 
-// ═══════════════════════════════════════════════════════
-//  UPLOAD custom JSON
-// ═══════════════════════════════════════════════════════
-document.getElementById("uploadInput").addEventListener("change", async function() {
-    const row = document.getElementById("fileToggleRow");
-    for (const file of this.files) {
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            if (!Array.isArray(data)) { alert(`${file.name}: JSON must be an array.`); continue; }
-            const uid = "custom_" + Date.now() + "_" + file.name;
-            const label = document.createElement("label");
-            label.className = "file-toggle checked";
-            label.dataset.id = uid;
-            label.innerHTML = `
-                <input type="checkbox" checked value="${uid}">
-                <span class="checkmark">✓</span>
-                <span>${file.name}</span>
-                <span class="file-badge">${data.length} q</span>`;
-            label.querySelector("input").addEventListener("change", e => {
-                label.classList.toggle("checked", e.target.checked);
-            });
-            row.appendChild(label);
-            // cache the data immediately
-            label._cachedData = data;
-        } catch(e) {
-            alert(`Failed to parse ${file.name}: ${e.message}`);
-        }
-    }
-    this.value = "";
+/* ══ TOGGLE SET SELECTION ══ */
+function toggleSet(id, card) {
+    selectedIds.has(id) ? (selectedIds.delete(id), card.classList.remove("selected"))
+                        : (selectedIds.add(id),    card.classList.add("selected"));
+    const n = selectedIds.size;
+    const total = countSelected();
+    const btn = document.getElementById("startBtn");
+    btn.disabled = n === 0;
+    btn.textContent = n === 0 ? "Select a set to start →"
+                    : `Start Quiz — ${total} questions →`;
+    document.getElementById("selNote").textContent =
+        n === 0 ? "No sets selected" : `${n} set${n > 1 ? "s" : ""} · ${total} questions`;
+}
+
+function countSelected() {
+    return [...selectedIds].reduce((a, id) => a + (loadedSets[id]?.questions.length || 0), 0);
+}
+
+/* ══ START QUIZ ══ */
+document.getElementById("startBtn").addEventListener("click", () => {
+    activeQ = [...selectedIds].flatMap(id =>
+        loadedSets[id].questions.map(q => ({ ...q, _setLabel: loadedSets[id].label }))
+    );
+    if (!activeQ.length) return;
+    idx = 0; selections = {}; verified = {}; correctness = {};
+    const names = [...selectedIds].map(id => loadedSets[id].label).join(" + ");
+    document.getElementById("quizTitle").innerHTML =
+        `<strong>${names}</strong> &nbsp;·&nbsp; ${activeQ.length} questions`;
+    showScreen(2);
+    render();
 });
 
-// ═══════════════════════════════════════════════════════
-//  LOAD SELECTED SETS
-// ═══════════════════════════════════════════════════════
-document.getElementById("loadBtn").addEventListener("click", loadSelected);
+/* ══ BACK ══ */
+document.getElementById("backBtn").addEventListener("click", () => showScreen(1));
 
-async function loadSelected() {
-    const checked = Array.from(document.querySelectorAll(".file-toggle.checked input"));
-    if (!checked.length) { alert("Please select at least one question set."); return; }
-
-    const btn = document.getElementById("loadBtn");
-    btn.disabled = true;
-    btn.textContent = "Loading…";
-    showLoading();
-
-    loadedSets = [];
-
-    for (const input of checked) {
-        const labelEl = input.closest(".file-toggle");
-        const uid = labelEl.dataset.id;
-
-        // custom uploaded file — data already cached
-        if (uid.startsWith("custom_")) {
-            if (labelEl._cachedData) {
-                loadedSets.push({
-                    id: uid,
-                    label: labelEl.querySelector("span:nth-of-type(2)").textContent,
-                    questions: normalise(labelEl._cachedData)
-                });
-            }
-            continue;
-        }
-
-        // built-in file — fetch from server
-        const setDef = BUILTIN_SETS.find(s => s.id === uid);
-        if (!setDef) continue;
-        try {
-            const res = await fetch(setDef.file);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            if (!Array.isArray(data)) throw new Error("JSON must be an array");
-            const badge = document.getElementById(`badge-${uid}`);
-            if (badge) badge.textContent = data.length + " q";
-            loadedSets.push({ id: uid, label: setDef.label, questions: normalise(data) });
-        } catch(e) {
-            alert(`Could not load "${setDef.label}": ${e.message}`);
-        }
-    }
-
-    btn.disabled = false;
-    btn.textContent = "▶ Load Selected Sets";
-
-    if (!loadedSets.length) { showEmpty(); return; }
-
-    // flatten & start quiz
-    activeQ = loadedSets.flatMap((s, si) =>
-        s.questions.map((q, qi) => ({ ...q, _setLabel: s.label, _globalNum: qi + 1 }))
-    );
-    idx = 0;
-    selections = {};
-    verified   = {};
-    correctness = {};
-    updateStats();
-    renderQuiz();
+function showScreen(n) {
+    document.getElementById("screen1").style.display = n === 1 ? "block" : "none";
+    document.getElementById("screen2").style.display = n === 2 ? "block" : "none";
 }
 
-// Normalise a raw JSON array into consistent shape
-function normalise(arr) {
-    return arr.map((q, i) => ({
-        num:     q.q_num ?? (i + 1),
-        text:    (q.text || q.question || "").trim(),
-        options: q.options || {},
-        answers: Array.isArray(q.answers) ? q.answers.map(a => String(a).trim()) : [],
-        explanation: q.explanation || q.rationale || ""
-    })).filter(q => q.text && Object.keys(q.options).length && q.answers.length);
-}
+/* ══ RENDER QUESTION ══ */
+function render() {
+    if (!activeQ.length) return;
+    const q     = activeQ[idx];
+    const isvfd = !!verified[idx];
+    const mysel = selections[idx] || [];
+    const total = activeQ.length;
 
-// ═══════════════════════════════════════════════════════
-//  QUIZ RENDER
-// ═══════════════════════════════════════════════════════
-function renderQuiz() {
-    const area = document.getElementById("quizArea");
-    if (!activeQ.length) { showEmpty(); return; }
-    const q = activeQ[idx];
-    const isVerified = !!verified[idx];
-    const mySelect   = selections[idx] || [];
+    const pct = Math.round(Object.keys(verified).length / total * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressFill").textContent = pct + "%";
+    document.getElementById("qLabel").textContent = `Q ${idx + 1} / ${total}`;
 
-    // progress
-    const pct = Math.round(Object.keys(verified).length / activeQ.length * 100);
+    const vl = document.getElementById("verifLabel");
+    if (isvfd) {
+        vl.textContent = correctness[idx] ? "✅ Correct" : "❌ Incorrect";
+        vl.style.color = correctness[idx] ? "#4ade80" : "#f87171";
+    } else { vl.textContent = "Not verified"; vl.style.color = "#475569"; }
 
-    // options HTML
+    document.getElementById("qMeta").innerHTML =
+        `<span class="q-tag">Q${q.num}</span>
+         <span class="q-tag">${esc(q._setLabel)}</span>
+         ${q.answers.length > 1 ? `<span class="q-tag multi">Choose ${q.answers.length}</span>` : ""}`;
+
+    document.getElementById("qText").textContent = q.text;
+
     const letters = Object.keys(q.options);
-    const optHtml = letters.map(letter => {
-        let cls = "option";
-        if (mySelect.includes(letter)) cls += " selected";
-        if (isVerified) {
+    document.getElementById("optsList").innerHTML = letters.map(letter => {
+        let cls = "opt";
+        if (mysel.includes(letter)) cls += " selected";
+        if (isvfd) {
             cls += " locked";
             if (q.answers.includes(letter)) cls += " show-correct";
-            else if (mySelect.includes(letter)) cls += " show-wrong";
+            else if (mysel.includes(letter)) cls += " show-wrong";
         }
-        const clickAttr = isVerified ? "" : `onclick="toggleOpt('${letter}')"`;
-        return `<div class="${cls}" ${clickAttr}>
+        return `<div class="${cls}" data-l="${letter}">
             <span class="opt-letter">${letter}.</span>
             <span class="opt-text">${esc(q.options[letter])}</span>
         </div>`;
     }).join("");
 
-    // feedback
-    let feedbackHtml = "";
-    if (isVerified) {
-        const ok = correctness[idx];
-        const fc = ok ? "correct" : "wrong";
-        const icon = ok ? "✅" : "❌";
-        const yourAns = mySelect.join(", ") || "—";
-        const correctAns = q.answers.join(", ");
-        const expLine = q.explanation ? `<br><br>💡 ${esc(q.explanation)}` : "";
-        feedbackHtml = `<div class="feedback ${fc}" style="display:block;">
-            ${icon} <strong>${ok ? "Correct!" : "Incorrect."}</strong>
-            &nbsp;Your answer: <strong>${yourAns}</strong> &nbsp;|&nbsp; Correct: <strong>${correctAns}</strong>${expLine}
-        </div>`;
+    if (!isvfd) {
+        document.querySelectorAll(".opt").forEach(el =>
+            el.addEventListener("click", () => toggleOpt(el.dataset.l))
+        );
     }
 
-    const verifLabel = isVerified
-        ? (correctness[idx] ? '<span style="color:#4ade80;">✅ Correct</span>' : '<span style="color:#f87171;">❌ Incorrect</span>')
-        : '<span style="color:#64748b;">⏳ Not verified</span>';
+    const fb = document.getElementById("feedback");
+    if (isvfd) {
+        const ok = correctness[idx];
+        fb.className = "feedback " + (ok ? "correct" : "wrong");
+        const exp = q.explanation ? `<br><br>💡 ${esc(q.explanation)}` : "";
+        fb.innerHTML = `<strong>${ok ? "Correct!" : "Incorrect."}</strong>
+            &nbsp;Your: <strong>${mysel.join(", ") || "—"}</strong>
+            &nbsp;·&nbsp; Correct: <strong>${q.answers.join(", ")}</strong>${exp}`;
+        fb.style.display = "block";
+    } else {
+        fb.style.display = "none";
+    }
 
-    const hintText = isVerified
-        ? "✔ Verified — navigate freely or reset to retry."
-        : "Select answer(s) then click <strong>Submit &amp; Verify</strong>.";
+    document.getElementById("hint").innerHTML = isvfd
+        ? "Verified — use Prev / Next to navigate or Reset to retry."
+        : "Select answer(s) and click <strong>Submit</strong> to check.";
 
-    area.innerHTML = `
-        <!-- Progress -->
-        <div class="card" style="padding:18px 22px;">
-            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;">${pct}%</div></div>
-            <div class="progress-meta">
-                <span>Question ${idx + 1} / ${activeQ.length}</span>
-                <span>${verifLabel}</span>
-            </div>
-        </div>
+    document.getElementById("prevBtn").disabled   = idx === 0;
+    document.getElementById("nextBtn").disabled   = idx === total - 1;
+    document.getElementById("submitBtn").disabled = isvfd;
 
-        <!-- Question -->
-        <div class="question-card">
-            <div class="question-meta">
-                <span class="q-tag">Q${q.num}</span>
-                <span class="q-tag">${esc(q._setLabel)}</span>
-                ${q.answers.length > 1 ? `<span class="q-tag" style="color:#fbbf24;">Choose ${q.answers.length}</span>` : ""}
-            </div>
-            <div class="question-text">${esc(q.text)}</div>
-            <div class="options-list">${optHtml}</div>
-            ${feedbackHtml}
-            <div class="hint-line">${hintText}</div>
-        </div>
-
-        <!-- Nav -->
-        <div class="nav-row">
-            <button class="btn btn-gray" onclick="go(-1)" ${idx === 0 ? "disabled" : ""}>◀ Prev</button>
-            <button class="btn btn-blue" onclick="verify()" ${isVerified ? "disabled" : ""}>✅ Submit &amp; Verify</button>
-            <button class="btn btn-green" onclick="go(1)" ${idx === activeQ.length - 1 ? "disabled" : ""}>Next ▶</button>
-            <button class="btn btn-amber" onclick="doReset()">⟳ Reset</button>
-            <button class="btn btn-purple" onclick="showResults()">🏆 Results</button>
-        </div>
-    `;
     updateStats();
 }
 
-function showEmpty() {
-    document.getElementById("quizArea").innerHTML = `
-        <div class="empty-state"><div class="icon">📂</div>No questions loaded.</div>`;
-}
-function showLoading() {
-    document.getElementById("quizArea").innerHTML = `
-        <div class="card"><div class="loading"><div class="spinner"></div> Loading question sets…</div></div>`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  INTERACTION
-// ═══════════════════════════════════════════════════════
+/* ══ OPTION TOGGLE ══ */
 function toggleOpt(letter) {
     if (verified[idx]) return;
     let sel = selections[idx] ? [...selections[idx]] : [];
-    if (sel.includes(letter)) sel = sel.filter(l => l !== letter);
-    else sel.push(letter);
+    sel.includes(letter) ? (sel = sel.filter(l => l !== letter)) : sel.push(letter);
     selections[idx] = sel;
-    renderQuiz();
+    render();
 }
 
-function verify() {
+/* ══ NAV ══ */
+document.getElementById("prevBtn").addEventListener("click", () => { if (idx > 0)                    { idx--; render(); } });
+document.getElementById("nextBtn").addEventListener("click", () => { if (idx < activeQ.length - 1)  { idx++; render(); } });
+
+document.getElementById("submitBtn").addEventListener("click", () => {
     if (verified[idx]) return;
-    const mySelect = selections[idx] || [];
-    if (!mySelect.length) { alert("Select at least one option."); return; }
+    const sel = selections[idx] || [];
+    if (!sel.length) { alert("Select at least one option."); return; }
     const q = activeQ[idx];
-    const ok = JSON.stringify([...mySelect].sort()) === JSON.stringify([...q.answers].sort());
-    verified[idx]    = true;
-    correctness[idx] = ok;
-    updateStats();
-    renderQuiz();
-}
+    correctness[idx] = JSON.stringify([...sel].sort()) === JSON.stringify([...q.answers].sort());
+    verified[idx] = true;
+    render();
+});
 
-function go(dir) {
-    const next = idx + dir;
-    if (next >= 0 && next < activeQ.length) { idx = next; renderQuiz(); }
-}
-
-function doReset() {
-    if (!confirm("Reset all progress? This clears all answers and verifications.")) return;
+document.getElementById("resetBtn").addEventListener("click", () => {
+    if (!confirm("Reset all answers and progress?")) return;
     idx = 0; selections = {}; verified = {}; correctness = {};
-    updateStats();
-    renderQuiz();
-}
+    updateStats(); render();
+});
 
-// ═══════════════════════════════════════════════════════
-//  STATS
-// ═══════════════════════════════════════════════════════
+/* ══ STATS ══ */
 function updateStats() {
-    document.getElementById("totalQty").textContent    = activeQ.length;
-    document.getElementById("answeredQty").textContent = Object.keys(verified).length;
-    document.getElementById("correctQty").textContent  = Object.values(correctness).filter(Boolean).length;
-    document.getElementById("setNames").textContent    = loadedSets.map(s => s.label).join(" · ");
+    document.getElementById("statTotal").textContent    = activeQ.length;
+    document.getElementById("statAnswered").textContent = Object.keys(verified).length;
+    document.getElementById("statCorrect").textContent  = Object.values(correctness).filter(Boolean).length;
 }
 
-// ═══════════════════════════════════════════════════════
-//  RESULTS MODAL
-// ═══════════════════════════════════════════════════════
-function showResults() {
-    if (!activeQ.length) { alert("No questions loaded."); return; }
+/* ══ RESULTS ══ */
+document.getElementById("resultsBtn").addEventListener("click", () => {
     const total   = activeQ.length;
     const correct = Object.values(correctness).filter(Boolean).length;
     const pct     = ((correct / total) * 100).toFixed(1);
-    const grade   = pct >= 70 ? "🎉 Pass" : "📚 Keep Practicing";
 
-    let rows = activeQ.map((q, i) => {
+    document.getElementById("scoreRow").innerHTML = `
+        <div class="score-box">
+            <div class="score-num" style="color:${pct >= 70 ? '#4ade80' : '#f87171'}">${pct}%</div>
+            <div class="score-lbl">${pct >= 70 ? "Pass" : "Keep practicing"}</div>
+        </div>
+        <div class="score-box">
+            <div class="score-num">${correct}/${total}</div>
+            <div class="score-lbl">Correct</div>
+        </div>
+        <div class="score-box">
+            <div class="score-num">${Object.keys(verified).length}</div>
+            <div class="score-lbl">Verified</div>
+        </div>`;
+
+    document.getElementById("resultsList").innerHTML = activeQ.map((q, i) => {
         const st = verified[i]
-            ? (correctness[i] ? '<span style="color:#4ade80;">✓ Correct</span>' : '<span style="color:#f87171;">✗ Wrong</span>')
-            : '<span style="color:#64748b;">— Skipped</span>';
+            ? (correctness[i]
+                ? '<span style="color:#4ade80;white-space:nowrap">✓ Correct</span>'
+                : '<span style="color:#f87171;white-space:nowrap">✗ Wrong</span>')
+            : '<span style="color:#475569;white-space:nowrap">— Skipped</span>';
         const your = (selections[i] || []).join(", ") || "—";
         return `<div class="result-item">
-            <div class="ri-top"><span><strong>Q${q.num}</strong> – ${esc(q.text.slice(0, 75))}${q.text.length > 75 ? "…" : ""}</span>${st}</div>
-            <div class="ri-ans">Your: ${your} &nbsp;|&nbsp; Correct: ${q.answers.join(", ")}</div>
-            ${q.explanation ? `<div class="ri-ans" style="color:#6b7280;margin-top:4px;">💡 ${esc(q.explanation)}</div>` : ""}
+            <div class="ri-top">
+                <span><strong>Q${q.num}</strong> ${esc(q.text.slice(0, 72))}${q.text.length > 72 ? "…" : ""}</span>
+                ${st}
+            </div>
+            <div class="ri-ans">Your: ${your} &nbsp;·&nbsp; Correct: ${q.answers.join(", ")}</div>
+            ${q.explanation ? `<div class="ri-ans" style="margin-top:4px;color:#334155">💡 ${esc(q.explanation)}</div>` : ""}
         </div>`;
     }).join("");
 
-    document.getElementById("modalBody").innerHTML = `
-        <div class="score-summary">
-            <div><div class="score-big" style="color:${pct>=70?'#4ade80':'#f87171'}">${pct}%</div><div class="score-label">${grade}</div></div>
-            <div><div class="score-big">${correct}/${total}</div><div class="score-label">Correct / Total</div></div>
-            <div><div class="score-big">${Object.keys(verified).length}</div><div class="score-label">Verified</div></div>
-        </div>
-        <div style="max-height:350px; overflow-y:auto;">${rows}</div>`;
-    document.getElementById("resultsModal").classList.add("open");
-}
+    document.getElementById("modal").classList.add("open");
+});
 
-document.getElementById("closeModal").addEventListener("click", () => {
-    document.getElementById("resultsModal").classList.remove("open");
-});
+document.getElementById("closeModal").addEventListener("click", () =>
+    document.getElementById("modal").classList.remove("open"));
+
 document.getElementById("resetFromModal").addEventListener("click", () => {
-    document.getElementById("resultsModal").classList.remove("open");
-    doReset();
+    document.getElementById("modal").classList.remove("open");
+    idx = 0; selections = {}; verified = {}; correctness = {};
+    updateStats(); render();
 });
-document.getElementById("resultsModal").addEventListener("click", function(e) {
+
+document.getElementById("modal").addEventListener("click", function(e) {
     if (e.target === this) this.classList.remove("open");
 });
 
-// ── Expose helpers to inline onclick ──
-window.toggleOpt = toggleOpt;
-window.verify    = verify;
-window.go        = go;
-window.doReset   = doReset;
-window.showResults = showResults;
+/* ══ HELPERS ══ */
+function normalise(arr) {
+    return arr.map((q, i) => ({
+        num:         q.q_num ?? (i + 1),
+        text:        (q.text || q.question || "").trim(),
+        options:     q.options || {},
+        answers:     Array.isArray(q.answers) ? q.answers.map(String) : [],
+        explanation: q.explanation || ""
+    })).filter(q => q.text && Object.keys(q.options).length && q.answers.length);
+}
 
-// ── Tiny HTML escaper ──
-function esc(str) {
-    if (!str) return "";
-    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function esc(s) {
+    return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 </script>
 </body>
